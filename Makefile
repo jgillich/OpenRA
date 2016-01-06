@@ -247,9 +247,7 @@ PROGRAMS += utility
 utility: $(utility_TARGET)
 
 # Patches binary headers to work around a mono bug
-fixheader.exe: packaging/fixheader.cs
-	@echo CSC fixheader.exe
-	@$(CSC) packaging/fixheader.cs $(CSFLAGS) -out:fixheader.exe -t:exe $(COMMON_LIBS:%=-r:%)
+fixheader.exe:
 
 # Generate build rules for each target defined above in PROGRAMS
 define BUILD_ASSEMBLY
