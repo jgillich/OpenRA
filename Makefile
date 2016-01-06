@@ -246,15 +246,10 @@ utility_LIBS = $(COMMON_LIBS) $(utility_DEPS) thirdparty/download/ICSharpCode.Sh
 PROGRAMS += utility
 utility: $(utility_TARGET)
 
-# Patches binary headers to work around a mono bug
-fixheader.exe: packaging/fixheader.cs
-	@echo CSC fixheader.exe
-	@$(CSC) packaging/fixheader.cs $(CSFLAGS) -out:fixheader.exe -t:exe $(COMMON_LIBS:%=-r:%)
-
 # Generate build rules for each target defined above in PROGRAMS
 define BUILD_ASSEMBLY
 
-$$($(1)_TARGET): $$($(1)_SRCS) Makefile $$($(1)_DEPS) fixheader.exe
+$$($(1)_TARGET): $$($(1)_SRCS) Makefile $$($(1)_DEPS)
 	@echo CSC $$(@)
 	@$(CSC) $$($(1)_LIBS:%=-r:%) \
 		-out:$$(@) $(CSFLAGS) $$($(1)_FLAGS) \
@@ -262,7 +257,6 @@ $$($(1)_TARGET): $$($(1)_SRCS) Makefile $$($(1)_DEPS) fixheader.exe
 		-t:"$$($(1)_KIND)" \
 		$$($(1)_EXTRA) \
 		$$($(1)_SRCS)
-	@mono fixheader.exe $$(@) > /dev/null
 	@test `echo $$(@) | sed 's/^.*\.//'` = "dll" && chmod a-x $$(@) || ``
 	@$$($(1)_EXTRA_CMDS)
 endef
